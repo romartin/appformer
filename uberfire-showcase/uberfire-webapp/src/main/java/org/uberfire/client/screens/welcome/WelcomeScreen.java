@@ -18,25 +18,42 @@ package org.uberfire.client.screens.welcome;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.FlowPanel;
 import org.uberfire.client.annotations.WorkbenchContextId;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.screens.welcome.sessions.SessionInitializersTest;
 
 @Dependent
 @WorkbenchScreen(identifier = "welcome")
 public class WelcomeScreen
         extends Composite {
 
-    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
+    @Inject
+    private SessionInitializersTest initializersTest;
+
+    @Inject
+    private ClientProvaServiceTest provaService;
+
+    private FlowPanel panel;
 
     @PostConstruct
     public void init() {
-        initWidget(uiBinder.createAndBindUi(this));
+        panel = new FlowPanel();
+        Button bit = new Button(" ** Init ** ");
+        bit.addClickHandler(clickEvent -> initializersTest.initialize());
+        panel.add(bit);
+        Button bts = new Button(" ** toString ** ");
+        bts.addClickHandler(clickEvent -> provaService.testToString());
+        panel.add(bts);
+        Button btdto = new Button(" ** toDTO ** ");
+        btdto.addClickHandler(clickEvent -> provaService.testToDTO());
+        panel.add(btdto);
+        initWidget(panel);
     }
 
     @WorkbenchPartTitle
@@ -47,11 +64,5 @@ public class WelcomeScreen
     @WorkbenchContextId
     public String getMyContextRef() {
         return "welcomeContext";
-    }
-
-    interface ViewBinder
-            extends
-            UiBinder<Widget, WelcomeScreen> {
-
     }
 }
